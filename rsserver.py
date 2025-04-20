@@ -18,7 +18,7 @@ class RSServer:
         self.db = load_db(db_hyperparameter["type"])
         self.lock = threading.Lock()
 
-    def handle_client(self, conn):
+    def handle_client(self, conn, addr):
         try:
             while True:
                 data = conn.recv(RSMetaMsg.get_size())
@@ -27,12 +27,14 @@ class RSServer:
                 # process rsprotocol message
                 meta_msg = RSMetaMsg.deserialize(data)
                 if meta_msg.meta_type == RSMetaType.CLIENT_PUT:
+                    print(f"[{addr}] Received put request")
                     # handle client put request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
                     with self.lock:
                         self.db.put(info)
                 elif meta_msg.meta_type == RSMetaType.CLIENT_GET:
+                    print(f"[{addr}] Received get request")
                     # handle client get request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
@@ -56,7 +58,7 @@ class RSServer:
             while True:
                 conn, addr = self.socket.accept()
                 print(f"Connected by {addr}")
-                threading.Thread(target=self.handle_client, args=(conn,)).start()
+                threading.Thread(target=self.handle_client, args=(conn, addr,)).start()
         except KeyboardInterrupt:
             print("\nServer shutting down caused by KeyboardInterrupt...")
         except Exception as e:
