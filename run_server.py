@@ -1,5 +1,5 @@
 from rsserver import RSServer
-from config import host_parameter
+from config import single_host_parameter
 
-server = RSServer(host_parameter["host"], host_parameter["port"])
-server.start()
+server = RSServer(single_host_parameter["host"], single_host_parameter["port"])
+server.run()

@@ -52,7 +52,7 @@ class RSServer:
         finally:
             conn.close()
 
-    def start(self):
+    def run(self):
         print(f"Server listening on {self.host}:{self.port}")
         try:
             while True:
