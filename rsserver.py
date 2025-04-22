@@ -16,7 +16,7 @@ class RSServer:
         self.socket.listen()
         # db setting
         self.db = load_db(db_hyperparameter["type"])
-        self.lock = threading.Lock()
+        self.write_lock = threading.Lock()
 
     def handle_client(self, conn, addr):
         try:
@@ -31,15 +31,14 @@ class RSServer:
                     # handle client put request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
-                    with self.lock:
+                    with self.write_lock:
                         self.db.put(info)
                 elif meta_msg.meta_type == RSMetaType.CLIENT_GET:
                     print(f"[{addr}] Received get request")
                     # handle client get request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
-                    with self.lock:
-                        result = self.db.get(info)
+                    result = self.db.get(info)
                     # send response back to client
                     response = RSMsgDelimiter.RSJOINBLOCK.join(result).encode("utf-8")
                     response_msg = RSMetaMsg(RSMetaType.SERVER_SEND, len(response))
