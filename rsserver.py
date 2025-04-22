@@ -3,6 +3,7 @@ from config import db_hyperparameter
 from db.db_loader import load_db
 import threading
 from rsprotocol.protocol import RSMetaMsg, RSMetaType, RSMsgDelimiter
+from util import log_flush
 
 
 class RSServer:
@@ -14,6 +15,8 @@ class RSServer:
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.host, self.port))
         self.socket.listen()
+        # set up logger
+        self.fileIO = open(f'./log/server_{port}.log', 'a')
         # db setting
         self.db = load_db(db_hyperparameter["type"])
         self.write_lock = threading.Lock()
@@ -27,14 +30,14 @@ class RSServer:
                 # process rsprotocol message
                 meta_msg = RSMetaMsg.deserialize(data)
                 if meta_msg.meta_type == RSMetaType.CLIENT_PUT:
-                    print(f"[{addr}] Received put request")
+                    log_flush(self.fileIO, f"[{addr}] Received put request")
                     # handle client put request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
                     with self.write_lock:
                         self.db.put(info)
                 elif meta_msg.meta_type == RSMetaType.CLIENT_GET:
-                    print(f"[{addr}] Received get request")
+                    log_flush(self.fileIO, f"[{addr}] Received get request")
                     # handle client get request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
@@ -47,21 +50,22 @@ class RSServer:
                 else:
                     raise
         except Exception as e:
-            print(f"Error handling client: {e}")
+            log_flush(self.fileIO, f"Error handling client: {e}")
         finally:
             conn.close()
 
     def run(self):
         print(f"Server listening on {self.host}:{self.port}")
+        log_flush(self.fileIO, f"Server listening on {self.host}:{self.port}")
         try:
             while True:
                 conn, addr = self.socket.accept()
-                print(f"Connected by {addr}")
+                log_flush(self.fileIO, f"Connected by {addr}")
                 threading.Thread(target=self.handle_client, args=(conn, addr,)).start()
         except KeyboardInterrupt:
-            print("\nServer shutting down caused by KeyboardInterrupt...")
+            log_flush(self.fileIO, "\nServer shutting down caused by KeyboardInterrupt...")
         except Exception as e:
-            print(f"Error handling client: {e}")
+            log_flush(self.fileIO, f"Error handling client: {e}")
         finally:
             self.socket.close()
 
