@@ -54,8 +54,14 @@ class RSServer:
         finally:
             conn.close()
 
+    def close(self):
+        log_flush(self.fileIO, f"Server on {self.host}:{self.port} closed")
+        self.fileIO.close()
+        self.socket.close()
+
     def run(self):
         print(f"Server listening on {self.host}:{self.port}")
+        log_flush(self.fileIO, "=================================================")
         log_flush(self.fileIO, f"Server listening on {self.host}:{self.port}")
         try:
             while True:
@@ -65,7 +71,7 @@ class RSServer:
         except KeyboardInterrupt:
             log_flush(self.fileIO, "\nServer shutting down caused by KeyboardInterrupt...")
         except Exception as e:
-            log_flush(self.fileIO, f"Error handling client: {e}")
+            log_flush(self.fileIO, f"ERROR: Error handling client: {e}")
         finally:
-            self.socket.close()
+            self.close()
 
