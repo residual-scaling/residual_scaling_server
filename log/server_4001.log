@@ -15,3 +15,60 @@ Server on 127.0.0.1:4001 closed
 =================================================
 Server listening on 127.0.0.1:4001
 Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 57222)
+Connected by ('127.0.0.1', 38870)
+Connected by ('127.0.0.1', 54512)
+Connected by ('127.0.0.1', 44466)
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 56420)
+[('127.0.0.1', 56420)] Received get request
+[('127.0.0.1', 56420)] Received put request
+[('127.0.0.1', 56420)] Received get request
+[('127.0.0.1', 56420)] Received put request
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 54388)
+[('127.0.0.1', 54388)] Received get request
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 56352)
+[('127.0.0.1', 56352)] Received get request
+[('127.0.0.1', 56352)] Received put request
+[('127.0.0.1', 56352)] Received get request
+[('127.0.0.1', 56352)] Received put request
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 51044)
+[('127.0.0.1', 51044)] Received get request
+[('127.0.0.1', 51044)] Received put request
+[('127.0.0.1', 51044)] Received get request
+[('127.0.0.1', 51044)] Received put request
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 47898)
+[('127.0.0.1', 47898)] Received get request
+[('127.0.0.1', 47898)] Received put request
+[('127.0.0.1', 47898)] Received get request
+[('127.0.0.1', 47898)] Received put request
+Server on 127.0.0.1:4001 closed
+=================================================
+Server listening on 127.0.0.1:4001
+Connected by ('127.0.0.1', 42992)
+[('127.0.0.1', 42992)] Received get request
+[('127.0.0.1', 42992)] Received put request
+Connected by ('127.0.0.1', 51068)
+[('127.0.0.1', 51068)] Received get request
+[('127.0.0.1', 51068)] Received get request
+[('127.0.0.1', 51068)] Received put request
+[('127.0.0.1', 51068)] Received get request
+[('127.0.0.1', 51068)] Received put request
+[('127.0.0.1', 51068)] Received put request
+Server on 127.0.0.1:4001 closed

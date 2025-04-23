@@ -1,7 +1,7 @@
 db_hyperparameter = {
     "type": "vector",
     "k": 3,
-    "bm25threshold": -2
+    "bm25threshold": -10000
 }
 single_host_parameter = {
     "host": "127.0.0.1",

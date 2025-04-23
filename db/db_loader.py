@@ -3,9 +3,9 @@ from db.keyword_db import KeywordDB
 from db.vector_db import VectorDB
 
 
-def load_db(db_type: str) -> BaseDB:
+def load_db(db_type: str, port: int) -> BaseDB:
     if db_type == "vector":
-        return VectorDB()
+        return VectorDB(port)
     elif db_type == "keyword":
         return KeywordDB()
     else:
