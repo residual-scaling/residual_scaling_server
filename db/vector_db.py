@@ -50,3 +50,11 @@ class VectorDB(BaseDB):
 
     def _update_bm25(self):
         self.bm25 = BM25Okapi(self.tokenized_corpus)
+
+    def save(self, path: str = "./backup_db/"):
+        with open(path, 'w') as f:
+            for item in self.db:
+                f.write("%s\n" % item)
+        log_flush(self.fileIO, f"[VectorDB] Saved db to {path}")
+
+    def load(self, path: str = "./backup_db/"):
