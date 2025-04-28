@@ -3,6 +3,7 @@ from db.base_db import BaseDB
 from config import db_hyperparameter
 from util import log_flush
 import json
+import os
 
 
 class VectorDB(BaseDB):
@@ -38,7 +39,7 @@ class VectorDB(BaseDB):
 
         query_tokens = self._tokenize(query_txt)
         scores = self.bm25.get_scores(query_tokens)
-        print(f"[VectorDB] scores: {scores}")
+        # print(f"[VectorDB] scores: {scores}")
         scored_docs = list(zip(scores, self.db))
         # log_flush(self.fileIO, f"[VectorDB] scored_docs len: {len(scored_docs)}")
         log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
@@ -67,7 +68,13 @@ class VectorDB(BaseDB):
         with open(file_path, 'w') as fp:
             json.dump(saved_data, fp)
 
+    def exist_backup(self, path: str = "./backup_db/"):
+        file_path = path + f"vectordb_{self.port}.json"
+        return os.path.isfile(file_path)
+
     def load(self, path: str = "./backup_db/"):
+        if not self.exist_backup(file_path):
+            raise Exception(f"In VectorDB.load(), load file with path {path} and port {self.port} does not exist.")
         file_path = path + f"vectordb_{self.port}.json"
         log_flush(self.fileIO, f"[VectorDB] Load db from {file_path}")
         with open(file_path) as f:

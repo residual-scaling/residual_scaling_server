@@ -17,9 +17,13 @@ class RSServer:
         self.socket.listen()
         # set up logger
         self.fileIO = open(f'./log/server_{port}.log', 'a')
-        # db setting
+        # db setting, load db if exist
         self.db = load_db(db_hyperparameter["type"])
         self.write_lock = threading.Lock()
+        if self.db.exist_backup():
+            log_flush(self.fileIO, f"Loading db {self.port} from backup...")
+            self.db.load()
+
 
     def handle_client(self, conn, addr):
         try:
@@ -56,6 +60,9 @@ class RSServer:
 
     def close(self):
         log_flush(self.fileIO, f"Server on {self.host}:{self.port} closed")
+        # save the db
+        self.db.save()
+        # close process
         self.fileIO.close()
         self.socket.close()
 
@@ -74,4 +81,3 @@ class RSServer:
             log_flush(self.fileIO, f"ERROR: Error handling client: {e}")
         finally:
             self.close()
-
