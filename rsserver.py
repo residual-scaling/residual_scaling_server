@@ -51,6 +51,12 @@ class RSServer:
                     response_msg = RSMetaMsg(RSMetaType.SERVER_SEND, len(response))
                     conn.sendall(response_msg.serialize())
                     conn.sendall(response)
+                elif meta_msg.meta_type == RSMetaType.CLIENT_SAVE:
+                    log_flush(self.fileIO, f"[{addr}] Received save request")
+                    # handle client save request
+                    with self.write_lock:
+                        self.db.save()
+                    # conn.sendall(RSMetaMsg(RSMetaType.SERVER_ACK).serialize())
                 else:
                     raise
         except Exception as e:
