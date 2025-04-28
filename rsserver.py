@@ -18,7 +18,7 @@ class RSServer:
         # set up logger
         self.fileIO = open(f'./log/server_{port}.log', 'a')
         # db setting, load db if exist
-        self.db = load_db(db_hyperparameter["type"])
+        self.db = load_db(db_hyperparameter["type"], port)
         self.write_lock = threading.Lock()
         if self.db.exist_backup():
             log_flush(self.fileIO, f"Loading db {self.port} from backup...")
