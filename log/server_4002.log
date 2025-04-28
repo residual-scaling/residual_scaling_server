@@ -1,6 +1,0 @@
-=================================================
-Server listening on 127.0.0.1:4002
-Connected by ('127.0.0.1', 36480)
-Connected by ('127.0.0.1', 50254)
-[('127.0.0.1', 50254)] Received save request
-Server on 127.0.0.1:4002 closed
