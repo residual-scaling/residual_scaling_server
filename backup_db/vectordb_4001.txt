@@ -1,0 +1,1 @@
+{"db": ["Hello there good man!", "It is quite windy in London", "How is the weather today?"], "tokenized_corpus": [["hello", "there", "good", "man!"], ["it", "is", "quite", "windy", "in", "london"], ["how", "is", "the", "weather", "today?"]]}
