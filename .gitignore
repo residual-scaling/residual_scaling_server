@@ -1,6 +1,7 @@
 # git rm -r --cached log
 # git commit -m "Stop tracking the log directory"
 log/
+backup_db/
 __pycache__/
 .ipynb_checkpoints/
 .DS_Store
