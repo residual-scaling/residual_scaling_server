@@ -73,6 +73,7 @@ class VectorDB(BaseDB):
         return os.path.isfile(file_path)
 
     def load(self, path: str = "./backup_db/"):
+        file_path = path + f"vectordb_{self.port}.json"
         if not self.exist_backup(file_path):
             raise Exception(f"In VectorDB.load(), load file with path {path} and port {self.port} does not exist.")
         file_path = path + f"vectordb_{self.port}.json"
