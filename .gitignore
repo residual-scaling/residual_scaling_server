@@ -1,5 +1,5 @@
-# git rm -r --cached log
-# git commit -m "Stop tracking the log directory"
+# git rm -r --cached backup_db/
+# git commit -m "Stop tracking the backup_db/ directory"
 log/
 backup_db/
 __pycache__/

@@ -42,7 +42,7 @@ class VectorDB(BaseDB):
         # print(f"[VectorDB] scores: {scores}")
         scored_docs = list(zip(scores, self.db))
         # log_flush(self.fileIO, f"[VectorDB] scored_docs len: {len(scored_docs)}")
-        log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
+        # log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
 
         # Filter out documents with score lower than th
         scored_docs = [doc for doc in scored_docs if doc[0] >= self.bm25th]
@@ -51,6 +51,7 @@ class VectorDB(BaseDB):
         scored_docs.sort(key=lambda x: (-x[0], x[1]))
 
         scored_docs = scored_docs[:self.k]
+        log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
         scored_docs = [doc[1] for doc in scored_docs]
         return scored_docs
 
