@@ -29,7 +29,7 @@ class VectorDB(BaseDB):
         tokenized = self._tokenize(txt)
         self.tokenized_corpus.append(tokenized)
         self._update_bm25()
-        log_flush(self.fileIO, f"[VectorDB] cur db size: {len(self.db)}")
+        log_flush(self.fileIO, f"[VectorDB] save done, cur db size: {len(self.db)}, saved txt: ({txt})")
 
     def get(self, query_txt):
         log_flush(self.fileIO, "[VectorDB] Searching...")
@@ -41,17 +41,16 @@ class VectorDB(BaseDB):
         scores = self.bm25.get_scores(query_tokens)
         # print(f"[VectorDB] scores: {scores}")
         scored_docs = list(zip(scores, self.db))
-        # log_flush(self.fileIO, f"[VectorDB] scored_docs len: {len(scored_docs)}")
-        # log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
 
         # Filter out documents with score lower than th
         scored_docs = [doc for doc in scored_docs if doc[0] >= self.bm25th]
-        log_flush(self.fileIO, f"[VectorDB] scored_docs after filter: {scored_docs}")
+        qualified_size = len(scored_docs)
+
         # Sort by descending score, then ascending text for determinism
         scored_docs.sort(key=lambda x: (-x[0], x[1]))
 
         scored_docs = scored_docs[:self.k]
-        log_flush(self.fileIO, f"[VectorDB] scored_docs: {scored_docs}")
+        log_flush(self.fileIO, f"[VectorDB] search done, count of bm25 score higher than ({self.bm25th}) is ({qualified_size}), original query: ({query_txt}), scored_docs: ({scored_docs})")
         scored_docs = [doc[1] for doc in scored_docs]
         return scored_docs
 
