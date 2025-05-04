@@ -61,18 +61,18 @@ class VectorDB(BaseDB):
         self.bm25 = BM25Okapi(self.tokenized_corpus)
 
 
-    def save(self, path: str = "./backup_db/"):
+    def save(self, path: str = "./storage/"):
         file_path = path + f"vectordb_{self.port}.json"
         log_flush(self.fileIO, f"[VectorDB] Saved db to {file_path}")
         saved_data = {"db": self.db, "tokenized_corpus": self.tokenized_corpus}
         with open(file_path, 'w') as fp:
             json.dump(saved_data, fp)
 
-    def exist_backup(self, path: str = "./backup_db/"):
+    def exist_backup(self, path: str = "./storage/"):
         file_path = path + f"vectordb_{self.port}.json"
         return os.path.isfile(file_path)
 
-    def load(self, path: str = "./backup_db/"):
+    def load(self, path: str = "./storage/"):
         if not self.exist_backup(path):
             raise Exception(f"In VectorDB.load(), load file with path {path} and port {self.port} does not exist.")
         file_path = path + f"vectordb_{self.port}.json"
