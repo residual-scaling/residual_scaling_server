@@ -79,6 +79,9 @@ class VectorDB(BaseDB):
         log_flush(self.fileIO, f"[VectorDB] Load db from {file_path}")
         with open(file_path) as f:
             loaded_data = json.load(f)
+            assert len(loaded_data["db"]) == len(loaded_data["tokenized_corpus"])
+            if len(loaded_data["db"]) == 0:
+                return
             self.db, self.tokenized_corpus = loaded_data["db"], loaded_data["tokenized_corpus"]
         # update bm25
         self._update_bm25()
