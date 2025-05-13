@@ -2,7 +2,7 @@ import socket
 from config import db_hyperparameter
 from db.db_loader import load_db
 import threading
-from rsprotocol.protocol import RSMetaMsg, RSMetaType, RSMsgDelimiter
+from rsprotocol.protocol import RSMetaMsg, RSGetType, RSMetaType, RSMsgDelimiter
 from util import log_flush
 
 
@@ -22,6 +22,7 @@ class RSServer:
         self.write_lock = threading.Lock()
         if self.db.exist_backup():
             log_flush(self.fileIO, f"Loading db {self.port} from backup...")
+            print(f"*** Loading db {self.port} from backup...")
             self.db.load()
 
 
@@ -45,10 +46,15 @@ class RSServer:
                     # handle client get request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
-                    result = self.db.get(info)
+                    if meta_msg.get_type == RSGetType.WITHOUT_SCORE:
+                        result = self.db.get_plain(info)
+                    elif meta_msg.get_type == RSGetType.WITH_SCORE:
+                        result = self.db.get_with_score_str(info)
+                    else:
+                        raise ValueError(f"Invalid get type {meta_msg.get_type}")
                     # send response back to client
                     response = RSMsgDelimiter.RSJOINBLOCK.join(result).encode("utf-8")
-                    response_msg = RSMetaMsg(RSMetaType.SERVER_SEND, len(response))
+                    response_msg = RSMetaMsg(RSMetaType.SERVER_SEND, RSGetType.NOT_RELATED, len(response))
                     conn.sendall(response_msg.serialize())
                     conn.sendall(response)
                 elif meta_msg.meta_type == RSMetaType.CLIENT_SAVE:
@@ -56,7 +62,6 @@ class RSServer:
                     # handle client save request
                     with self.write_lock:
                         self.db.save()
-                    # conn.sendall(RSMetaMsg(RSMetaType.SERVER_ACK).serialize())
                 else:
                     raise
         except Exception as e:

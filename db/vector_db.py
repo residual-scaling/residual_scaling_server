@@ -51,8 +51,20 @@ class VectorDB(BaseDB):
 
         scored_docs = scored_docs[:self.k]
         log_flush(self.fileIO, f"[VectorDB] search done, count of bm25 score higher than ({self.bm25th}) is ({qualified_size}), original query: ({query_txt}), scored_docs: ({scored_docs})")
-        scored_docs = [doc[1] for doc in scored_docs]
-        return scored_docs
+
+        scores = [sd[0] for sd in scored_docs]
+        scores = [float(s) for s in scores]
+        docs = [sd[1] for sd in scored_docs]
+        return scores, docs
+    
+    def get_plain(self, query_txt):
+        _, docs = self.get(query_txt)
+        return docs
+    
+    def get_with_score_str(self, query_txt):
+        scores, docs = self.get(query_txt)
+        scores_str = ";".join([str(s) for s in scores])
+        return [scores_str] + docs
 
     def _tokenize(self, text):
         return text.lower().split()
