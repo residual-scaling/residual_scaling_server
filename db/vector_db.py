@@ -1,7 +1,7 @@
 from rank_bm25 import BM25Okapi
 from db.base_db import BaseDB
 from config import db_hyperparameter
-from rsprotocol.protocol.RSMsgDelimiter import RS_SCORE_SEPERATOR
+from rsprotocol.protocol import RSMsgDelimiter
 from util import log_flush
 import json
 import os
@@ -36,7 +36,7 @@ class VectorDB(BaseDB):
         log_flush(self.fileIO, "[VectorDB] Searching...")
         if not self.db:
             log_flush(self.fileIO, "[VectorDB] db is empty")
-            return []
+            return [], []
 
         query_tokens = self._tokenize(query_txt)
         scores = self.bm25.get_scores(query_tokens)
@@ -64,7 +64,7 @@ class VectorDB(BaseDB):
     
     def get_with_score_str(self, query_txt):
         scores, docs = self.get(query_txt)
-        scores_str = RS_SCORE_SEPERATOR.join([str(s) for s in scores])
+        scores_str = RSMsgDelimiter.RS_SCORE_SEPERATOR.join([str(s) for s in scores])
         return [scores_str] + docs
 
     def _tokenize(self, text):
