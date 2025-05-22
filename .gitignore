@@ -5,3 +5,5 @@ storage/
 __pycache__/
 .ipynb_checkpoints/
 .DS_Store
+model/__pycache__/
+db/__pycache__/
