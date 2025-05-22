@@ -1,13 +1,15 @@
 import socket
 from config import db_hyperparameter
-from db.db_loader import load_db
+from db.vector_db import VectorDB
 import threading
 from rsprotocol.protocol import RSMetaMsg, RSGetType, RSMetaType, RSMsgDelimiter
 from util import log_flush
+from condence_model import CondenseModel
+from model.local_model import LocalModel
 
 
 class RSServer:
-    def __init__(self, host, port):
+    def __init__(self, host: str, port: int, lm: LocalModel):
         # server setting
         self.host = host
         self.port = port
@@ -18,12 +20,13 @@ class RSServer:
         # set up logger
         self.fileIO = open(f'./log/server_{port}.log', 'a')
         # db setting, load db if exist
-        self.db = load_db(db_hyperparameter["type"], port)
+        self.db = VectorDB(port, lm)
         self.write_lock = threading.Lock()
         if self.db.exist_backup():
             log_flush(self.fileIO, f"Loading db {self.port} from backup...")
             print(f"*** Loading db {self.port} from backup...")
             self.db.load()
+            print(f"*** Load done, cur db size: {len(self.db.db)}")
 
 
     def handle_client(self, conn, addr):
