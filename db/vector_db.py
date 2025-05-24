@@ -151,7 +151,10 @@ class VectorDB(BaseDB):
         log_flush(self.fileIO, "[_combine_similar_docs] docs:")
         log_flush(self.fileIO, f"{docs}")
         # return combined
-        result = self.model.condense(combined)
+        for _ in range(3):
+            result = self.model.condense(combined)
+            if len(result) > 0:
+                break
         log_flush(self.fileIO, "[_combine_similar_docs] result:")
         log_flush(self.fileIO, f"{result}")
         return result
@@ -207,6 +210,9 @@ class VectorDB(BaseDB):
             group = groups[i]
             log_flush(self.fileIO, f"[VectorDB] Combining group {i + 1}/{len(groups)}: {group}")
             combined = self._safe_combine(group)
+            if len(combined) == 0:
+                log_flush(self.fileIO, f"[VectorDB] Combined document is empty for group {i + 1}/{len(groups)}: {group}")
+                continue
             new_db.append(combined)
             new_tokenized.append(self._tokenize(combined))
             

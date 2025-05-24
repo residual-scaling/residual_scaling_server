@@ -42,6 +42,10 @@ class RSServer:
                     # handle client put request
                     byte_data = conn.recv(meta_msg.meta_len)
                     info = byte_data.decode("utf-8")
+                    # check if the infor is empty string, if so, do not save it
+                    if len(info) == 0:
+                        log_flush(self.fileIO, f"[{addr}] Received empty put request, ignore it")
+                        continue
                     with self.write_lock:
                         self.db.put(info)
                 elif meta_msg.meta_type == RSMetaType.CLIENT_GET:
