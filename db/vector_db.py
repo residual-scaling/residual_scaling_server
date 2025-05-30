@@ -9,7 +9,7 @@ import numpy as np
 from collections import defaultdict
 from condence_model import CondenseModel
 from model.local_model import LocalModel
-from util import get_string_len_sum
+from util import get_string_len_sum, tokenize_str
 
 
 class VectorDB(BaseDB):
@@ -27,6 +27,7 @@ class VectorDB(BaseDB):
         self.k = db_hyperparameter["k"]
         self.return_bm25th = db_hyperparameter["return_bm25th"]
         self.similarity_bm25th = db_hyperparameter["similarity_bm25th"]
+        print(f"self.similarity_bm25th: {self.similarity_bm25th}")
 
         # set up logger
         self.fileIO = open(f'./log/vector_{self.port}.log', 'a')
@@ -35,7 +36,7 @@ class VectorDB(BaseDB):
     def put(self, txt):
         log_flush(self.fileIO, "[VectorDB] Adding to db...")
         self.db.append(txt)
-        tokenized = self._tokenize(txt)
+        tokenized = tokenize_str(txt)
         self.tokenized_corpus.append(tokenized)
         self._update_bm25()
         log_flush(self.fileIO, f"[VectorDB] save done, cur db size: {len(self.db)}, saved txt: ({txt})")
@@ -46,7 +47,7 @@ class VectorDB(BaseDB):
             log_flush(self.fileIO, "[VectorDB] db is empty")
             return [], []
 
-        query_tokens = self._tokenize(query_txt)
+        query_tokens = tokenize_str(query_txt)
         scores = self.bm25.get_scores(query_tokens)
         # print(f"[VectorDB] scores: {scores}")
         scored_docs = list(zip(scores, self.db))
@@ -74,9 +75,6 @@ class VectorDB(BaseDB):
         scores, docs = self.get(query_txt)
         scores_str = RSMsgDelimiter.RS_SCORE_SEPERATOR.join([str(s) for s in scores])
         return [scores_str] + docs
-
-    def _tokenize(self, text):
-        return text.lower().split()
 
     def _update_bm25(self):
         self.bm25 = BM25Okapi(self.tokenized_corpus)
@@ -214,7 +212,7 @@ class VectorDB(BaseDB):
                 log_flush(self.fileIO, f"[VectorDB] Combined document is empty for group {i + 1}/{len(groups)}: {group}")
                 continue
             new_db.append(combined)
-            new_tokenized.append(self._tokenize(combined))
+            new_tokenized.append(tokenize_str(combined))
             
         log_flush(self.fileIO, f"[VectorDB] Combined {len(groups)} groups of similar documents. Old db size: {len(self.db)}. New db size: {len(new_db)}")
 
