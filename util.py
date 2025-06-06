@@ -36,3 +36,14 @@ def get_string_len_sum(docs: list) -> int:
     Get the sum of the lengths of all strings in the list.
     """
     return sum(len(doc) for doc in docs)
+
+
+def clean_str(txt: str) -> str:
+    txt = txt.lower()
+    cleaned = re.sub(r'[^a-z0-9 ]', '', txt)
+    return cleaned
+
+
+def tokenize_str(txt: str) -> list:
+    clean_txt = clean_str(txt)
+    return clean_txt.split()
