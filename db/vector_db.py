@@ -105,12 +105,24 @@ class VectorDB(BaseDB):
         # update bm25
         self._update_bm25()
 
+    def load_external(self, file_path):
+        log_flush(self.fileIO, f"[VectorDB] Load db from {file_path}")
+        with open(file_path) as f:
+            loaded_data = json.load(f)
+            assert len(loaded_data["db"]) == len(loaded_data["tokenized_corpus"])
+            if len(loaded_data["db"]) == 0:
+                return
+            self.db, self.tokenized_corpus = loaded_data["db"], loaded_data["tokenized_corpus"]
+        # update bm25
+        self._update_bm25()
+
     def _get_similarity_matrix(self):
         """Calculate similarity matrix between all documents using BM25 scores"""
         n = len(self.db)
         similarity_matrix = np.zeros((n, n))
         
         for i in range(n):
+            print(f"_get_similarity_matrix {i}/{n}")
             log_flush(self.fileIO, f"_get_similarity_matrix {i}/{n}")
             query_tokens = self.tokenized_corpus[i]
             scores = self.bm25.get_scores(query_tokens)
