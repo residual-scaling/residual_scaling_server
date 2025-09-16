@@ -9,10 +9,10 @@ single_host_parameter = {
     "port": 4001
 }
 local_host_ports = {
-    "ports": [4001, 4002, 4003],
+    "ports": [4001, 4002, 4003, 4004, 4005, 4006],
 }
 model_parameter = {
-    "path": "/root/autodl-tmp/Meta-Llama-3-8B-Instruct",
+    "path": "/home/xingkun/nmi-experience_scaling/Meta-Llama-3-8B-Instruct",
     "temperature": 0.7,
     "pipe_max_length": 8192,
 }
